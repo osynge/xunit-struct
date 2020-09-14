@@ -1,20 +1,12 @@
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_xml_rs;
-
-extern crate log;
-extern crate simple_logger;
-
 use serde_xml_rs::from_str;
 
 #[derive(Debug, Deserialize, PartialEq)]
-
-enum Root {
+pub(crate) enum TestSuites {
     #[serde(rename = "testsuites")]
     Testsuites {
-        disabled: Option<String>,
-        errors: Option<String>,
-        failures: Option<String>,
+        disabled: Option<u32>,
+        errors: Option<u32>,
+        failures: Option<u32>,
         name: Option<String>,
         tests: Option<String>,
         time: Option<String>,
@@ -24,9 +16,9 @@ enum Root {
     Testsuite {
         name: String,
         tests: String,
-        disabled: Option<String>,
-        errors: Option<String>,
-        failures: Option<String>,
+        disabled: Option<u32>,
+        errors: Option<u32>,
+        failures: Option<u32>,
         hostname: Option<String>,
         id: Option<String>,
         package: Option<String>,
@@ -44,99 +36,99 @@ enum Root {
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "testsuite")]
-struct TestSuite {
-    name: String,
-    tests: u16,
-    disabled: Option<String>,
-    errors: Option<String>,
-    failures: Option<String>,
-    hostname: Option<String>,
-    id: Option<String>,
-    package: Option<String>,
-    skipped: Option<String>,
-    time: Option<f32>,
-    timestamp: Option<String>,
-    properties: Option<Properties>,
-    testcase: Option<Vec<TestCase>>,
+pub(crate) struct TestSuite {
+    pub(crate) name: String,
+    pub(crate) tests: u16,
+    pub(crate) disabled: Option<u32>,
+    pub(crate) errors: Option<u32>,
+    pub(crate) failures: Option<u32>,
+    pub(crate) hostname: Option<String>,
+    pub(crate) id: Option<String>,
+    pub(crate) package: Option<String>,
+    pub(crate) skipped: Option<String>,
+    pub(crate) time: Option<f32>,
+    pub(crate) timestamp: Option<String>,
+    pub(crate) properties: Option<Properties>,
+    pub(crate) testcase: Option<Vec<TestCase>>,
     #[serde(rename = "system-out")]
-    system_out: Option<SystemOut>,
+    pub(crate) system_out: Option<SystemOut>,
     #[serde(rename = "system-err>")]
-    system_err: Option<SystemErr>,
+    pub(crate) system_err: Option<SystemErr>,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "testcase")]
-struct TestCase {
-    assertions: Option<String>,
-    classname: String,
-    status: Option<String>,
-    time: f32,
-    skipped: Option<Skipped>,
-    error: Option<Error>,
-    failure: Option<Failure>,
+pub(crate) struct TestCase {
+    pub(crate) assertions: Option<String>,
+    pub(crate) classname: String,
+    pub(crate) status: Option<String>,
+    pub(crate) time: f32,
+    pub(crate) skipped: Option<Skipped>,
+    pub(crate) error: Option<Error>,
+    pub(crate) failure: Option<Failure>,
     #[serde(rename = "system-out", default)]
-    system_out: Option<SystemOut>,
+    pub(crate) system_out: Option<SystemOut>,
     #[serde(rename = "system-err", default)]
-    system_err: Option<SystemErr>,
+    pub(crate) system_err: Option<SystemErr>,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "skipped")]
-struct Skipped {
-    message: String,
+pub(crate) struct Skipped {
+    pub(crate) message: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "error")]
-struct Error {
-    message: String,
+pub(crate) struct Error {
+    pub(crate) message: String,
     #[serde(rename = "type", default)]
-    error_type: String,
+    pub(crate) error_type: String,
     #[serde(rename = "$value")]
-    description: String,
+    pub(crate) description: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "failure")]
-struct Failure {
-    message: String,
+pub(crate) struct Failure {
+    pub(crate) message: String,
     #[serde(rename = "type", default)]
-    failure_type: String,
+    pub(crate) failure_type: String,
     #[serde(rename = "$value")]
-    description: String,
+    pub(crate) description: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "system-out")]
-struct SystemOut {
+pub(crate) struct SystemOut {
     #[serde(rename = "$value")]
-    value: String,
+    pub(crate) value: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "system-err")]
-struct SystemErr {
+pub(crate) struct SystemErr {
     #[serde(rename = "$value")]
-    value: String,
+    pub(crate) value: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "property")]
-struct Property {
-    name: String,
-    value: String,
+pub(crate) struct Property {
+    pub(crate) name: String,
+    pub(crate) value: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-struct Properties {
+pub(crate) struct Properties {
     #[serde(rename = "$value")]
-    value: Vec<Property>,
+    pub(crate) value: Vec<Property>,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-struct Item {
-    name: String,
-    source: String,
+pub(crate) struct Item {
+    pub(crate) name: String,
+    pub(crate) source: String,
 }
 
 #[cfg(test)]
@@ -192,7 +184,7 @@ mod tests {
                 </testcase>
             </testsuite>
         </testsuites>"#;
-        let item: Root = from_str(junit_str).unwrap();
+        let item: TestSuites = from_str(junit_str).unwrap();
         println!("{:#?}", item);
     }
 
@@ -210,7 +202,7 @@ mod tests {
   </testsuite>
 </testsuites>
 "#;
-        let item: Root = from_str(junit_str).unwrap();
+        let item: TestSuites = from_str(junit_str).unwrap();
         println!("{:#?}", item);
     }
 
