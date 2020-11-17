@@ -5,6 +5,19 @@ use std::convert::TryFrom;
 use std::convert::TryInto;
 
 use crate::read_xml;
+
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum XunitError {
+    #[error("xml parsing error")]
+    Xml(#[from] serde_xml_rs::Error),
+    #[error("Could not parse date")]
+    InvalidDate,
+    #[error("unknown data store error")]
+    Unknown,
+}
+
 #[derive(Debug)]
 pub struct TestSuites {
     pub disabled: Option<u32>,
@@ -16,8 +29,16 @@ pub struct TestSuites {
     pub testsuite: Vec<TestSuite>,
 }
 
+impl TestSuites {
+    pub fn try_from_xml(value: &str) -> Result<Self, XunitError> {
+        let item: crate::read_xml::TestSuites = from_str(value)?;
+        let ts = TestSuites::try_from(item)?;
+        Ok(ts)
+    }
+}
+
 impl TryFrom<crate::read_xml::TestSuites> for TestSuites {
-    type Error = ();
+    type Error = XunitError;
     fn try_from(value: crate::read_xml::TestSuites) -> Result<Self, Self::Error> {
         match value {
             crate::read_xml::TestSuites::Testsuites {
@@ -62,7 +83,7 @@ impl TryFrom<crate::read_xml::TestSuites> for TestSuites {
                 testcase,
                 system_out,
                 system_err,
-            } => Err(()),
+            } => Err(XunitError::Unknown),
         }
     }
 }
@@ -86,12 +107,12 @@ pub struct TestSuite {
 }
 
 impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
-    type Error = ();
+    type Error = XunitError;
     fn try_from(value: crate::read_xml::TestSuite) -> Result<Self, Self::Error> {
         let timestamp = match value.timestamp {
             Some(p) => match DateTime::parse_from_rfc3339(p.as_str()) {
                 Ok(pi) => Some(DateTime::<Utc>::from(pi)),
-                Err(pi) => return Err(()),
+                Err(pi) => return Err(XunitError::InvalidDate),
             },
             None => None,
         };
@@ -240,7 +261,7 @@ impl From<crate::read_xml::Item> for Item {
     }
 }
 
-fn load_xcode(input: &str) -> Result<TestSuites, ()> {
+fn load_xcode(input: &str) -> Result<TestSuites, XunitError> {
     let item: crate::read_xml::TestSuites = from_str(input).unwrap();
     TestSuites::try_from(item)
 }
