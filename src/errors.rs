@@ -5,7 +5,7 @@ pub enum XunitError {
     #[error("xml parsing error")]
     Xml(#[from] serde_xml_rs::Error),
     #[error("Could not parse date")]
-    InvalidDate,
-    #[error("unknown data store error")]
+    InvalidDate(#[from] chrono::ParseError),
+    #[error("unknown xUnit error")]
     Unknown,
 }
