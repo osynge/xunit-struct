@@ -1,6 +1,6 @@
 use crate::errors::XunitError;
 use crate::read_xml;
-use chrono::{DateTime, FixedOffset, TimeZone, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_xml_rs::from_str;
 use std::convert::From;
@@ -100,10 +100,7 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
     type Error = XunitError;
     fn try_from(value: crate::read_xml::TestSuite) -> Result<Self, Self::Error> {
         let timestamp = match value.timestamp {
-            Some(p) => match DateTime::parse_from_rfc3339(p.as_str()) {
-                Ok(pi) => Some(DateTime::<Utc>::from(pi)),
-                Err(pi) => return Err(XunitError::InvalidDate),
-            },
+            Some(p) => Some(crate::date_time::parse_from_rfc3339(p.as_str())?),
             None => None,
         };
         let props: Vec<Property> = match value.properties {
