@@ -1,22 +1,11 @@
+use crate::errors::XunitError;
+use crate::read_xml;
 use chrono::{DateTime, FixedOffset, TimeZone, Utc};
+use serde::{Deserialize, Serialize};
 use serde_xml_rs::from_str;
 use std::convert::From;
 use std::convert::TryFrom;
 use std::convert::TryInto;
-
-use crate::read_xml;
-
-use thiserror::Error;
-
-#[derive(Error, Debug)]
-pub enum XunitError {
-    #[error("xml parsing error")]
-    Xml(#[from] serde_xml_rs::Error),
-    #[error("Could not parse date")]
-    InvalidDate,
-    #[error("unknown data store error")]
-    Unknown,
-}
 
 #[derive(Debug)]
 pub struct TestSuites {
@@ -87,6 +76,7 @@ impl TryFrom<crate::read_xml::TestSuites> for TestSuites {
         }
     }
 }
+
 #[derive(Debug)]
 pub struct TestSuite {
     pub name: String,
