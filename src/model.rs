@@ -7,7 +7,7 @@ use std::convert::From;
 use std::convert::TryFrom;
 use std::convert::TryInto;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Xunit {
     pub disabled: Option<u32>,
     pub errors: Option<u32>,
@@ -77,7 +77,7 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TestSuite {
     pub name: String,
     pub tests: u16,
@@ -139,7 +139,7 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
         })
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TestCase {
     pub assertions: Option<String>,
     pub classname: String,
@@ -187,7 +187,7 @@ impl From<crate::read_xml::TestCase> for TestCase {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Error {
     pub message: String,
     pub error_type: String,
@@ -203,7 +203,7 @@ impl From<crate::read_xml::Error> for Error {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Failure {
     pub message: String,
     pub failure_type: String,
@@ -219,7 +219,7 @@ impl From<crate::read_xml::Failure> for Failure {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Property {
     pub name: String,
     pub value: String,
