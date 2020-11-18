@@ -8,7 +8,7 @@ use std::convert::TryFrom;
 use std::convert::TryInto;
 
 #[derive(Debug)]
-pub struct TestSuites {
+pub struct Xunit {
     pub disabled: Option<u32>,
     pub errors: Option<u32>,
     pub failures: Option<u32>,
@@ -18,15 +18,15 @@ pub struct TestSuites {
     pub testsuite: Vec<TestSuite>,
 }
 
-impl TestSuites {
+impl Xunit {
     pub fn try_from_xml(value: &str) -> Result<Self, XunitError> {
         let item: crate::read_xml::TestSuites = from_str(value)?;
-        let ts = TestSuites::try_from(item)?;
+        let ts = Xunit::try_from(item)?;
         Ok(ts)
     }
 }
 
-impl TryFrom<crate::read_xml::TestSuites> for TestSuites {
+impl TryFrom<crate::read_xml::TestSuites> for Xunit {
     type Error = XunitError;
     fn try_from(value: crate::read_xml::TestSuites) -> Result<Self, Self::Error> {
         match value {
@@ -45,7 +45,7 @@ impl TryFrom<crate::read_xml::TestSuites> for TestSuites {
                     let mut foo = TestSuite::try_from(val)?;
                     ts.push(foo);
                 }
-                Ok(TestSuites {
+                Ok(Xunit {
                     disabled: disabled,
                     errors: errors,
                     failures: failures,
@@ -266,7 +266,7 @@ mod tests {
   </testsuite>
 </testsuites>
 "#;
-        let item = TestSuites::try_from_xml(junit_str).unwrap();
+        let item = Xunit::try_from_xml(junit_str).unwrap();
         println!("{:#?}", item);
     }
 }
