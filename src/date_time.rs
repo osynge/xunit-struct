@@ -4,16 +4,16 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 
 static DATE_TIME_FORMAT_PYTEST: &'static str = "%FT%T%.6f";
 
-pub(crate) fn parse_from_native(input: &str) -> Result<DateTime<Utc>, XunitError> {
+pub(crate) fn parse_from_native(input: &str) -> Result<i64, XunitError> {
     match NaiveDateTime::parse_from_str(input, DATE_TIME_FORMAT_PYTEST) {
-        Ok(pi) => Ok(DateTime::<Utc>::from_utc(pi, Utc)),
+        Ok(pi) => Ok(pi.timestamp()),
         Err(pi) => Err(XunitError::InvalidDate(pi)),
     }
 }
 
-pub(crate) fn parse(input: &str) -> Result<DateTime<Utc>, XunitError> {
+pub(crate) fn parse(input: &str) -> Result<i64, XunitError> {
     match DateTime::parse_from_rfc3339(input) {
-        Ok(pi) => return Ok(DateTime::<Utc>::from(pi)),
+        Ok(pi) => return Ok(pi.timestamp()),
         Err(_) => (),
     };
     parse_from_native(input)

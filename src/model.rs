@@ -89,7 +89,7 @@ pub struct TestSuite {
     pub package: Option<String>,
     pub skipped: Option<String>,
     pub time: Option<f32>,
-    pub timestamp: Option<DateTime<Utc>>,
+    pub timestamp: Option<i64>,
     pub properties: Vec<Property>,
     pub testcase: Vec<TestCase>,
     pub system_out: Option<String>,
