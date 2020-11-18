@@ -1,11 +1,6 @@
 use crate::errors::XunitError;
-use crate::read_xml;
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_xml_rs::from_str;
-use std::convert::From;
-use std::convert::TryFrom;
-use std::convert::TryInto;
+use std::convert::{From, TryFrom};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Xunit {
@@ -13,14 +8,14 @@ pub struct Xunit {
     pub errors: Option<u32>,
     pub failures: Option<u32>,
     pub name: Option<String>,
-    pub tests: Option<String>,
+    pub tests: Option<u32>,
     pub time: Option<String>,
     pub testsuite: Vec<TestSuite>,
 }
 
 impl Xunit {
     pub fn try_from_xml(value: &str) -> Result<Self, XunitError> {
-        let item: crate::read_xml::TestSuites = from_str(value)?;
+        let item: crate::read_xml::TestSuites = serde_xml_rs::from_str(value)?;
         let ts = Xunit::try_from(item)?;
         Ok(ts)
     }
@@ -42,7 +37,7 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
                 // As we want to cascade errors had to expand list
                 let mut ts = vec![];
                 for val in testsuite.into_iter() {
-                    let mut foo = TestSuite::try_from(val)?;
+                    let foo = TestSuite::try_from(val)?;
                     ts.push(foo);
                 }
                 Ok(Xunit {
@@ -72,7 +67,37 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
                 testcase,
                 system_out,
                 system_err,
-            } => Err(XunitError::Unknown),
+            } => {
+                let p = crate::read_xml::TestSuite {
+                    name: name.clone(),
+                    tests: 1,
+                    disabled: disabled,
+                    errors: errors,
+                    failures: failures,
+                    hostname: hostname,
+                    id: id,
+                    package: package,
+                    skipped: skipped,
+                    time: time,
+                    timestamp: timestamp,
+                    properties: properties,
+                    testcase: testcase,
+                    system_out: system_out,
+                    system_err: system_err,
+                };
+                let ts = TestSuite::try_from(p)?;
+                let ts_list = vec![ts];
+                let out = Xunit {
+                    disabled: disabled,
+                    errors: errors,
+                    failures: failures,
+                    name: Some(name),
+                    tests: Some(tests),
+                    time: None,
+                    testsuite: ts_list,
+                };
+                Ok(out)
+            }
         }
     }
 }
@@ -80,7 +105,7 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestSuite {
     pub name: String,
-    pub tests: u16,
+    pub tests: u32,
     pub disabled: Option<u32>,
     pub errors: Option<u32>,
     pub failures: Option<u32>,
@@ -268,5 +293,7 @@ mod tests {
 "#;
         let item = Xunit::try_from_xml(junit_str).unwrap();
         println!("{:#?}", item);
+        let j = serde_json::to_string(&item).unwrap();
+        println!("{:#?}", j);
     }
 }

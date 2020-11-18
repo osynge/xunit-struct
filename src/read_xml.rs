@@ -8,14 +8,14 @@ pub(crate) enum TestSuites {
         errors: Option<u32>,
         failures: Option<u32>,
         name: Option<String>,
-        tests: Option<String>,
+        tests: Option<u32>,
         time: Option<String>,
         testsuite: Vec<TestSuite>,
     },
     #[serde(rename = "testsuite")]
     Testsuite {
         name: String,
-        tests: String,
+        tests: u32,
         disabled: Option<u32>,
         errors: Option<u32>,
         failures: Option<u32>,
@@ -23,10 +23,10 @@ pub(crate) enum TestSuites {
         id: Option<String>,
         package: Option<String>,
         skipped: Option<String>,
-        time: Option<String>,
+        time: Option<f32>,
         timestamp: Option<String>,
         properties: Option<Properties>,
-        testcase: Vec<TestCase>,
+        testcase: Option<Vec<TestCase>>,
         #[serde(rename = "system-out")]
         system_out: Option<SystemOut>,
         #[serde(rename = "system-err>")]
@@ -38,7 +38,7 @@ pub(crate) enum TestSuites {
 #[serde(rename = "testsuite")]
 pub(crate) struct TestSuite {
     pub(crate) name: String,
-    pub(crate) tests: u16,
+    pub(crate) tests: u32,
     pub(crate) disabled: Option<u32>,
     pub(crate) errors: Option<u32>,
     pub(crate) failures: Option<u32>,

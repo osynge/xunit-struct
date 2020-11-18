@@ -7,5 +7,5 @@ extern crate simple_logger;
 
 mod date_time;
 mod errors;
-mod model;
+pub mod model;
 mod read_xml;
