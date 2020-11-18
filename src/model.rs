@@ -100,7 +100,7 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
     type Error = XunitError;
     fn try_from(value: crate::read_xml::TestSuite) -> Result<Self, Self::Error> {
         let timestamp = match value.timestamp {
-            Some(p) => Some(crate::date_time::parse_from_rfc3339(p.as_str())?),
+            Some(p) => Some(crate::date_time::parse(p.as_str())?),
             None => None,
         };
         let props: Vec<Property> = match value.properties {
@@ -248,17 +248,12 @@ impl From<crate::read_xml::Item> for Item {
     }
 }
 
-fn load_xcode(input: &str) -> Result<TestSuites, XunitError> {
-    let item: crate::read_xml::TestSuites = from_str(input).unwrap();
-    TestSuites::try_from(item)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn testsuite() {
+    fn testsuite_try_from_xml() {
         let junit_str = r#"<?xml version="1.0" encoding="utf-8"?>
 <testsuites>
   <testsuite errors="0" failures="0" hostname="e15oms"
@@ -271,7 +266,7 @@ mod tests {
   </testsuite>
 </testsuites>
 "#;
-        let item = load_xcode(junit_str);
+        let item = TestSuites::try_from_xml(junit_str).unwrap();
         println!("{:#?}", item);
     }
 }
