@@ -1,5 +1,5 @@
 [package]
-name = "xunit_struct"
+name = "xunit-struct"
 version = "0.1.0"
 authors = ["Owen Synge <osynge@googlemail.com>"]
 edition = "2018"
