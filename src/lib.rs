@@ -6,6 +6,6 @@ extern crate serde_xml_rs;
 extern crate simple_logger;
 
 mod date_time;
-mod errors;
+pub mod errors;
 pub mod model;
 mod read_xml;
