@@ -59,6 +59,7 @@ pub(crate) struct TestSuite {
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename = "testcase")]
 pub(crate) struct TestCase {
+    pub(crate) name: String,
     pub(crate) assertions: Option<String>,
     pub(crate) classname: String,
     pub(crate) status: Option<String>,
@@ -180,7 +181,7 @@ mod tests {
         let junit_str = r#"<?xml version="1.0" encoding="UTF-8"?>
         <testsuites name="with testsuites" >
             <testsuite name="name" tests="3">
-                <testcase assertions=""classname="" status="" time="1">
+                <testcase assertions=""classname="" status="" time="1" name="dfsf">
                 </testcase>
             </testsuite>
         </testsuites>"#;

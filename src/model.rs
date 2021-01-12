@@ -166,6 +166,7 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestCase {
+    pub name: String,
     pub assertions: Option<String>,
     pub classname: String,
     pub status: Option<String>,
@@ -200,6 +201,7 @@ impl From<crate::read_xml::TestCase> for TestCase {
             None => None,
         };
         TestCase {
+            name: value.name,
             assertions: value.assertions,
             classname: value.classname,
             status: value.status,
