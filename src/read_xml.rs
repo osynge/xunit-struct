@@ -38,7 +38,7 @@ pub(crate) enum TestSuites {
 #[serde(rename = "testsuite")]
 pub(crate) struct TestSuite {
     pub(crate) name: String,
-    pub(crate) tests: u32,
+    pub(crate) tests: Option<u32>,
     pub(crate) disabled: Option<u32>,
     pub(crate) errors: Option<u32>,
     pub(crate) failures: Option<u32>,

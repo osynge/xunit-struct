@@ -70,7 +70,7 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
             } => {
                 let p = crate::read_xml::TestSuite {
                     name: name.clone(),
-                    tests: 1,
+                    tests: Some(1),
                     disabled: disabled,
                     errors: errors,
                     failures: failures,
@@ -105,7 +105,7 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestSuite {
     pub name: String,
-    pub tests: u32,
+    pub tests: Option<u32>,
     pub disabled: Option<u32>,
     pub errors: Option<u32>,
     pub failures: Option<u32>,
