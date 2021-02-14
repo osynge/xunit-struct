@@ -31,3 +31,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }} # needed to post all lints as annotations for the pushed commit
           args: --all-features
+
+      - name: Release Build
+        run: |
+          docker build -t xunit-struct:latest .
