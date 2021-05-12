@@ -1,6 +1,5 @@
 use crate::errors::XunitError;
-use chrono::format::strftime;
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::{DateTime, NaiveDateTime};
 
 static DATE_TIME_FORMAT_PYTEST: &'static str = "%FT%T%.6f";
 
