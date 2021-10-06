@@ -1,5 +1,4 @@
 use crate::errors::XunitError;
-use serde::{Deserialize, Serialize};
 use std::convert::{From, TryFrom};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -101,7 +100,6 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
         }
     }
 }
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TestSuite {
     pub name: String,

@@ -1,5 +1,3 @@
-use serde_xml_rs::from_str;
-
 #[derive(Debug, Deserialize, PartialEq)]
 pub(crate) enum TestSuites {
     #[serde(rename = "testsuites")]
@@ -135,6 +133,7 @@ pub(crate) struct Item {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_xml_rs::from_str;
 
     #[test]
     fn failure() {
