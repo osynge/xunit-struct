@@ -2,7 +2,7 @@ use crate::errors::XunitError;
 use serde::{Deserialize, Serialize};
 use std::convert::{From, TryFrom};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Xunit {
     pub disabled: Option<u32>,
     pub errors: Option<u32>,
@@ -102,7 +102,7 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TestSuite {
     pub name: String,
     pub tests: Option<u32>,
@@ -164,7 +164,7 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
         })
     }
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TestCase {
     pub name: String,
     pub assertions: Option<String>,
@@ -214,7 +214,7 @@ impl From<crate::read_xml::TestCase> for TestCase {
         }
     }
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Error {
     pub message: String,
     pub error_type: String,
@@ -230,7 +230,7 @@ impl From<crate::read_xml::Error> for Error {
         }
     }
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Failure {
     pub message: String,
     pub failure_type: String,
@@ -246,7 +246,7 @@ impl From<crate::read_xml::Failure> for Failure {
         }
     }
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Property {
     pub name: String,
     pub value: String,
