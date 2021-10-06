@@ -1,6 +1,8 @@
 use crate::errors::XunitError;
 use std::convert::{From, TryFrom};
 
+/* Represent xunit as structure.
+ */
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Xunit {
     pub disabled: Option<u32>,
