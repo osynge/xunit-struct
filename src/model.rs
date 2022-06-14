@@ -38,16 +38,15 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
                 // As we want to cascade errors had to expand list
                 let mut ts = vec![];
                 for val in testsuite.into_iter() {
-                    let foo = TestSuite::try_from(val)?;
-                    ts.push(foo);
+                    ts.push(TestSuite::try_from(val)?);
                 }
                 Ok(Xunit {
-                    disabled: disabled,
-                    errors: errors,
-                    failures: failures,
-                    name: name,
-                    tests: tests,
-                    time: time,
+                    disabled,
+                    errors,
+                    failures,
+                    name,
+                    tests,
+                    time,
                     testsuite: ts,
                 })
             }
@@ -72,26 +71,26 @@ impl TryFrom<crate::read_xml::TestSuites> for Xunit {
                 let p = crate::read_xml::TestSuite {
                     name: name.clone(),
                     tests: Some(1),
-                    disabled: disabled,
-                    errors: errors,
-                    failures: failures,
-                    hostname: hostname,
-                    id: id,
-                    package: package,
-                    skipped: skipped,
-                    time: time,
-                    timestamp: timestamp,
-                    properties: properties,
-                    testcase: testcase,
-                    system_out: system_out,
-                    system_err: system_err,
+                    disabled,
+                    errors,
+                    failures,
+                    hostname,
+                    id,
+                    package,
+                    skipped,
+                    time,
+                    timestamp,
+                    properties,
+                    testcase,
+                    system_out,
+                    system_err,
                 };
                 let ts = TestSuite::try_from(p)?;
                 let ts_list = vec![ts];
                 let out = Xunit {
-                    disabled: disabled,
-                    errors: errors,
-                    failures: failures,
+                    disabled,
+                    errors,
+                    failures,
                     name: Some(name),
                     tests: Some(tests),
                     time: None,
@@ -129,11 +128,11 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
             None => None,
         };
         let props: Vec<Property> = match value.properties {
-            Some(p) => p.value.into_iter().map(|n| Property::from(n)).collect(),
+            Some(p) => p.value.into_iter().map(Property::from).collect(),
             None => Vec::new(),
         };
         let testcase: Vec<TestCase> = match value.testcase {
-            Some(p) => p.into_iter().map(|n| TestCase::from(n)).collect(),
+            Some(p) => p.into_iter().map(TestCase::from).collect(),
             None => Vec::new(),
         };
         let system_out = match value.system_out {
@@ -156,11 +155,11 @@ impl TryFrom<crate::read_xml::TestSuite> for TestSuite {
             package: value.package,
             skipped: value.skipped,
             time: value.time,
-            timestamp: timestamp,
+            timestamp,
             properties: props,
-            testcase: testcase,
-            system_out: system_out,
-            system_err: system_err,
+            testcase,
+            system_out,
+            system_err,
         })
     }
 }
@@ -180,14 +179,8 @@ pub struct TestCase {
 
 impl From<crate::read_xml::TestCase> for TestCase {
     fn from(value: crate::read_xml::TestCase) -> Self {
-        let error = match value.error {
-            Some(p) => Some(Error::from(p)),
-            None => None,
-        };
-        let failure = match value.failure {
-            Some(p) => Some(Failure::from(p)),
-            None => None,
-        };
+        let error = value.error.map(Error::from);
+        let failure = value.failure.map(Failure::from);
         let system_out = match value.system_out {
             Some(p) => Some(p.value),
             None => None,
@@ -206,11 +199,11 @@ impl From<crate::read_xml::TestCase> for TestCase {
             classname: value.classname,
             status: value.status,
             time: value.time,
-            skipped: skipped,
-            error: error,
-            failure: failure,
-            system_out: system_out,
-            system_err: system_err,
+            skipped,
+            error,
+            failure,
+            system_out,
+            system_err,
         }
     }
 }

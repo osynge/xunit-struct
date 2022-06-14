@@ -1,7 +1,7 @@
 use crate::errors::XunitError;
 use chrono::{DateTime, NaiveDateTime};
 
-static DATE_TIME_FORMAT_PYTEST: &'static str = "%FT%T%.6f";
+static DATE_TIME_FORMAT_PYTEST: &str = "%FT%T%.6f";
 
 pub(crate) fn parse_from_native(input: &str) -> Result<i64, XunitError> {
     match NaiveDateTime::parse_from_str(input, DATE_TIME_FORMAT_PYTEST) {
@@ -11,10 +11,9 @@ pub(crate) fn parse_from_native(input: &str) -> Result<i64, XunitError> {
 }
 
 pub(crate) fn parse(input: &str) -> Result<i64, XunitError> {
-    match DateTime::parse_from_rfc3339(input) {
-        Ok(pi) => return Ok(pi.timestamp()),
-        Err(_) => (),
-    };
+    if let Ok(pi) = DateTime::parse_from_rfc3339(input) {
+        return Ok(pi.timestamp());
+    }
     parse_from_native(input)
 }
 
